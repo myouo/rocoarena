@@ -32,8 +32,7 @@ public:
     const std::string& name() const noexcept {return name_;}
     const AttrType& attrs() const noexcept {return attrs_;}
 
-    //种族值和性格计算
-    void calcRealAttr(BS bs, IVData ivs, EVData evs, NatureType ntype, int level = 100);
+   
 
 private:
     //编号

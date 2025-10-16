@@ -4,6 +4,10 @@
 #include "Species.h"
 
 class Pet{
+public:
+    //种族值和性格计算
+    void calcRealStat(BS bs, IVData ivs, EVData evs, NatureType ntype, int level = 100);
+private:
     //模板
     const Species* species;
     //天赋

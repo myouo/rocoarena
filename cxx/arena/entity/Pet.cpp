@@ -1,8 +1,12 @@
 #pragma once
-#include "Species.h"
+#include "Pet.h"
 
-
-void Species::calcRealAttr(BS bs, IVData ivs, EVData evs, NatureType ntype, int level = 100) {
+/*
+    宠物的真实数值归于宠物个体而非类别，因此将函数作为Pet的成员函数。
+    attr好像有点重复了，改个名字
+    就Stat吧！
+*/
+void Pet::calcRealStat(BS bs, IVData ivs, EVData evs, NatureType ntype, int level = 100) {
     //数组以索引
     std::array<int,6> base = {bs.bEne, bs.bAtk, bs.bDef, bs.bSpA, bs.bSpD, bs.bSpe};
     std::array<int,6> iv   = {ivs.iEne, ivs.iAtk, ivs.iDef, ivs.iSpA, ivs.iSpD, ivs.iSpe};
