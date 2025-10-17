@@ -17,8 +17,8 @@
 
 typedef struct BasicStatus{
     int bEne, bAtk, bDef, bSpA, bSpD, bSpe;
-    /*BasicStatus(int bEne, int bAtk, int bDef, int bSpA, int bSpD, int bSpe) : 
-        bEne(bEne), bAtk(bAtk), bDef(bDef), bSpA(bSpA), bSpD(bSpD), bSpe(bSpe) {};*/
+    BasicStatus(int bEne, int bAtk, int bDef, int bSpA, int bSpD, int bSpe) : 
+        bEne(bEne), bAtk(bAtk), bDef(bDef), bSpA(bSpA), bSpD(bSpD), bSpe(bSpe) {};
 } BS;
 
 
@@ -31,8 +31,7 @@ public:
     const int id() const noexcept {return id_;}
     const std::string& name() const noexcept {return name_;}
     const AttrType& attrs() const noexcept {return attrs_;}
-
-   
+    Species(int id, std::string name, AttrType attrs, BS bs) : id_(id), name_(name), attrs_(attrs), bs_(bs) {};
 
 private:
     //编号
@@ -42,5 +41,5 @@ private:
     //宠物属性
     AttrType attrs_;
     //宠物种族值
-    BS bs;
+    BS bs_;
 };

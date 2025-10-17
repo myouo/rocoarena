@@ -1,4 +1,3 @@
-#pragma once
 #include "Pet.h"
 
 /*
@@ -6,7 +5,7 @@
     attr好像有点重复了，改个名字
     就Stat吧！
 */
-void Pet::calcRealStat(BS bs, IVData ivs, EVData evs, NatureType ntype, int level = 100) {
+void Pet::calcRealStat(BS bs, IVData ivs, EVData evs, NatureType ntype, int level) {
     //数组以索引
     std::array<int,6> base = {bs.bEne, bs.bAtk, bs.bDef, bs.bSpA, bs.bSpD, bs.bSpe};
     std::array<int,6> iv   = {ivs.iEne, ivs.iAtk, ivs.iDef, ivs.iSpA, ivs.iSpD, ivs.iSpe};
@@ -25,7 +24,7 @@ void Pet::calcRealStat(BS bs, IVData ivs, EVData evs, NatureType ntype, int leve
     const Nature& nature = (it != NATURE_TABLE.end()) ? it->second : NEUTRAL_NATURE;
 
     if (nature.up != nature.down) {
-        *r[nature.up] = int(std::round(*r[nature.up] * 1.1));
-        *r[nature.down] = int(std::round(*r[nature.down] * 0.9));
+        *r[nature.up] = int((*r[nature.up] * 1.1));
+        *r[nature.down] = int((*r[nature.down] * 0.9));
     }
 }
