@@ -84,15 +84,38 @@ static const std::string Attr2StringEN[] = {
     "Steel", "Light", "dFire", "dGrass", "dWater"
 };
 
-enum AttrAdvantage {
+enum class AttrAdvantage : int8_t {
     Neutral = 0,
-    Counter,
-    Resist
+    Counter = 1,
+    Resist = -1
 };
 
 
 class AttrChart {
 public:
+    static constexpr double getAttrAdvantage(AttrType atk, const std::array<AttrType, 2>& defs) noexcept {
+        int score = 0;
+        for(std::size_t i = 0; i < defs.size(); ++i) {
+            AttrType def = defs[i];
+            if(def == AttrType::None) continue;
+            score += static_cast<int>(attrChart[(int)atk][(int)def]);
+        }
+
+        switch(score) {
+            case  2: return 3.0;
+            case  1: return 2.0;
+            case  0: return 1.0;
+            case -1: return 1.0 / 2.0;
+            case -2: return 1.0 / 3.0;
+            default: return 1.0;
+        }
+    }
+
+    static constexpr double getAttrAdvantage(AttrType atk, AttrType def) noexcept {
+        return getAttrAdvantage(atk, std::array<AttrType, 2>{def, AttrType::None});
+    }
+
+private:
     static constexpr int N = static_cast<int>(AttrType::COUNT);
     /*
         attrChart来源 /Refs/AttrAdvantage.csv 
@@ -142,5 +165,4 @@ public:
         //dWater
         {AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Resist, AttrAdvantage::Neutral}
     }};
-
 };
