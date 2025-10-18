@@ -48,8 +48,8 @@ static std::unordered_map<std::string, AttrType> AttrFromEN = {
     {"Steel", AttrType::Steel},
     {"Light", AttrType::Light},
     {"dFire", AttrType::dFire},
-    {"dWater", AttrType::dWater},
-    {"dGrass", AttrType::dGrass}
+    {"dWater", AttrType::dGrass},
+    {"dGrass", AttrType::dWater}
 };
 
 static std::unordered_map<std::string, AttrType> AttrFromZH = {
@@ -72,21 +72,70 @@ static std::unordered_map<std::string, AttrType> AttrFromZH = {
     {"机械", AttrType::Steel},
     {"光", AttrType::Light},
     {"神火", AttrType::dFire},
-    {"神水", AttrType::dWater},
-    {"神草", AttrType::dGrass}
+    {"神草", AttrType::dGrass},
+    {"神水", AttrType::dWater}
 };
 
 static const std::string Attr2StringEN[] = {
     "Normal", "Fire", "Water", "Electric", "Grass",
     "Ice", "Fighting", "Poison", "Ground", "Flying",
     "Cute", "Worm", "Rock", "Ghost", "Dragon", "Demon",
-    "Steel", "Light", "dFire", "dWater", "dGrass"
+    "Steel", "Light", "dFire", "dGrass", "dWater"
 };
+
+enum AttrAdvantage {
+    Neutral = 0,
+    Counter = 1,
+    Resist = -1
+};
+
 
 class AttrChart {
 public:
     static constexpr int N = static_cast<int>(AttrType::COUNT);
-    static constexpr std::array<std::array<double,N>,N> attrChart = {
-        
-    };
+    static constexpr std::array<std::array<AttrAdvantage,N>,N> attrChart = {{
+        //普通 火系 水系 电系 草系 冰系 武系 毒系 土系 翼系 萌系 虫系 石系 幽灵 龙系 恶魔 机械 光系 神火 神草 神水
+        //Normal
+        {AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral},
+        //Fire
+        {AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist},
+        //Water
+        {AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral},
+        //Electric
+        {AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Resist, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral},
+        //Grass
+        {AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Counter, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Resist, AttrAdvantage::Neutral},
+        //Ice
+        {AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Resist},
+        //Fighting
+        {AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Resist, AttrAdvantage::Resist, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral},
+        //Poison
+        {AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral},
+        //Ground
+        {AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral},
+        //Flying
+        {AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral},
+        //Cute
+        {AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral},
+        //Worm
+        {AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral},
+        //Rock
+        {AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral},
+        //Ghost
+        {AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral},
+        //Dragon
+        {AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral},
+        //Demon
+        {AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral},
+        //Steel
+        {AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Resist, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Resist},
+        //Light
+        {AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral, AttrAdvantage::Neutral},
+        //dFire
+        {AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Neutral, AttrAdvantage::Counter, AttrAdvantage::Resist},
+        //dGrass
+        {AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Resist, AttrAdvantage::Neutral, AttrAdvantage::Counter},
+        //dWater
+        {AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Resist, AttrAdvantage::Neutral}
+    }};
 };

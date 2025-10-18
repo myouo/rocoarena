@@ -24,6 +24,7 @@ void Pet::calcRealStat(BS bs, IVData ivs, EVData evs, NatureType ntype, int leve
     const Nature& nature = (it != NATURE_TABLE.end()) ? it->second : NEUTRAL_NATURE;
 
     if (nature.up != nature.down) {
+        //此处不可以用std::round，因为洛克王国的计算方法是向下截断而非四舍五入
         *r[nature.up] = int((*r[nature.up] * 1.1));
         *r[nature.down] = int((*r[nature.down] * 0.9));
     }
