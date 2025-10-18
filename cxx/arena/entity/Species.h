@@ -31,7 +31,7 @@ public:
     const int id() const noexcept {return id_;}
     const std::string& name() const noexcept {return name_;}
     const std::array<AttrType, 2>& attrs() const noexcept {return attrs_;}
-    Species(int id, std::string name, AttrType attrs, BS bs) : id_(id), name_(name), attrs_(attrs), bs_(bs) {};
+    Species(int id, std::string name, std::array<AttrType, 2> attrs, BS bs) : id_(id), name_(name), attrs_(attrs), bs_(bs) {};
 
 private:
     //编号
@@ -39,7 +39,7 @@ private:
     //宠物名称
     std::string name_;
     //宠物属性
-    std::array<AttrType, 2> attrs_;
+    std::array<AttrType, 2> attrs_ = {AttrType::None, AttrType::None};
     //宠物种族值
     BS bs_;
 };
