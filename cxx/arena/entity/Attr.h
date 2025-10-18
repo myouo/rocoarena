@@ -25,7 +25,8 @@ enum class AttrType {
     dFire,
     dWater,
     dGrass,
-    COUNT
+    COUNT,
+    None
 };
 
 static std::unordered_map<std::string, AttrType> AttrFromEN = {
@@ -85,14 +86,17 @@ static const std::string Attr2StringEN[] = {
 
 enum AttrAdvantage {
     Neutral = 0,
-    Counter = 1,
-    Resist = -1
+    Counter,
+    Resist
 };
 
 
 class AttrChart {
 public:
     static constexpr int N = static_cast<int>(AttrType::COUNT);
+    /*
+        attrChart来源 /Refs/AttrAdvantage.csv 
+    */
     static constexpr std::array<std::array<AttrAdvantage,N>,N> attrChart = {{
         //普通 火系 水系 电系 草系 冰系 武系 毒系 土系 翼系 萌系 虫系 石系 幽灵 龙系 恶魔 机械 光系 神火 神草 神水
         //Normal
@@ -138,4 +142,5 @@ public:
         //dWater
         {AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Counter, AttrAdvantage::Resist, AttrAdvantage::Neutral}
     }};
+
 };
