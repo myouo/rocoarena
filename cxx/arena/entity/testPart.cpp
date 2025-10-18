@@ -3,6 +3,8 @@
 
 #include "Pet.h"
 
+// g++ testPart.cpp Pet.cpp -o testpart
+
 int main() {
     
     BS b1{150, 30, 126, 140, 125, 120};
