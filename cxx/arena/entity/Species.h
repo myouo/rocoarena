@@ -27,7 +27,7 @@ public:
     using Ptr = std::shared_ptr<const Species>;
 
     static Ptr createFromJson(const nlohmann::json& j);
-
+    
     const int id() const noexcept {return id_;}
     const std::string& name() const noexcept {return name_;}
     const std::array<AttrType, 2>& attrs() const noexcept {return attrs_;}
