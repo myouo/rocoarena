@@ -7,6 +7,7 @@
     chmod +x init.sh && ./init.sh
 debian类linux指令：
     sudo apt install libsqlite3-dev
+红帽不知道喵
 
 */
 #include <sqlite3.h>
