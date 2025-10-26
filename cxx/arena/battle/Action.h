@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../utils/Forward.h"
+#include "Forward.h"
 
 enum class ActionType {
     Skill,

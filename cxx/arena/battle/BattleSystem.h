@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../entity/Pet.h"
-#include "../entity/Skill.h"
+#include "entity/Pet.h"
+#include "skill/Skill.h"
 
 class BattleSystem {
 public:
