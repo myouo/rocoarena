@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build testLua",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "${workspaceFolder}/cxx/arena/test/testLua.cpp",    // 源文件路径
+                "${workspaceFolder}/cxx/arena/utils/Scripter/Scripter.cpp",
+                "-I${workspaceFolder}/cxx/arena/utils",  // 头文件路径（重点！）
+                "-I/usr/include/lua5.3",
+                "-llua5.3",
+                "-std=c++17",                            // 指定 C++ 标准（可改）
+                "-Wall",                                 // 打开警告
+                "-O2",                                   // 优化等级
+                "-o", "${workspaceFolder}/cxx/arena/bin/testLua"   // 输出文件路径
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"]
+        }
+    ]
+}
