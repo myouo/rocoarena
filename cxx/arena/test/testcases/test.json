@@ -1,0 +1,15 @@
+{
+    "title": "围城",
+    "author": "钱钟书",
+    "published_year": 1947,
+    "is_fiction": true,
+    "genres": [
+        "小说",
+        "讽刺",
+        "文学"
+    ],
+    "details": {
+        "language": "中文",
+        "pages": 300
+    }
+}
