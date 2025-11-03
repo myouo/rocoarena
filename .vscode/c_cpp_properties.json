@@ -5,8 +5,10 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/usr/include/lua5.3",
-                "${workspaceFolder}/cxx/arena",
-                "${workspaceFolder}/cxx/arena/utils"
+                "${workspaceFolder}/arena",
+                "${workspaceFolder}/arena/src",
+                "${workspaceFolder}/arena/src/core",
+                "${workspaceFolder}/arena/external"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

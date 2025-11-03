@@ -1,1 +1,0 @@
-/usr/bin/c++     CMakeFiles/testJSON.dir/test/testJSON.cpp.o CMakeFiles/testJSON.dir/utils/JSONLoader/JSONLoader.cpp.o  -o testJSON  -llua5.3 
