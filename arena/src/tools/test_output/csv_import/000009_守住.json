@@ -1,0 +1,18 @@
+{
+  "id": 9,
+  "name": "守住",
+  "description": "完全抵挡对手的攻击",
+  "skillType": 2,
+  "type": "Normal",
+  "power": 0,
+  "maxPP": 10,
+  "deletable": false,
+  "priority": 15,
+  "scripterPath": "",
+  "_meta": {
+    "imported_at": "2025-11-10T05:58:53.744833",
+    "batch": "test_data",
+    "source_row": 10,
+    "hash": "6ccec87241fb0aa4b2aa60a77fd2a1f5"
+  }
+}

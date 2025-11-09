@@ -1,0 +1,18 @@
+{
+  "id": 8,
+  "name": "神速",
+  "description": "以迅雷不及掩耳之势扑向对手",
+  "skillType": 0,
+  "type": "Normal",
+  "power": 80,
+  "maxPP": 5,
+  "deletable": false,
+  "priority": 16,
+  "scripterPath": "",
+  "_meta": {
+    "imported_at": "2025-11-10T06:33:46.805772",
+    "batch": "test_data",
+    "source_row": 9,
+    "hash": "92871668d893020e04672a900b692b4c"
+  }
+}

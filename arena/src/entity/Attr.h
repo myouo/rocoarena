@@ -33,7 +33,7 @@ static std::unordered_map<std::string, AttrType> AttrFromEN = {
     {"Normal", AttrType::Normal},
     {"Fire", AttrType::Fire},
     {"Water", AttrType::Water},
-    {"Electic", AttrType::Electric},
+    {"Electric", AttrType::Electric},
     {"Grass", AttrType::Grass},
     {"Ice", AttrType::Ice},
     {"Fighting", AttrType::Fighting},

@@ -1,0 +1,18 @@
+{
+  "id": 6,
+  "name": "影子球",
+  "description": "投掷一团阴影进行攻击",
+  "skillType": 1,
+  "type": "Ghost",
+  "power": 80,
+  "maxPP": 15,
+  "deletable": true,
+  "priority": 8,
+  "scripterPath": "",
+  "_meta": {
+    "imported_at": "2025-11-10T05:58:53.744523",
+    "batch": "test_data",
+    "source_row": 7,
+    "hash": "a629bd65a107faa57a8ef9bb5f1f2067"
+  }
+}

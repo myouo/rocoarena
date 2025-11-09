@@ -1,0 +1,18 @@
+{
+  "id": 1,
+  "name": "撞击",
+  "description": "用整个身体撞向对手进行攻击",
+  "skillType": 0,
+  "type": "Normal",
+  "power": 40,
+  "maxPP": 35,
+  "deletable": true,
+  "priority": 8,
+  "scripterPath": "",
+  "_meta": {
+    "imported_at": "2025-11-10T05:58:53.743692",
+    "batch": "test_data",
+    "source_row": 2,
+    "hash": "3d04a63321a3dadb41a0a00672d1f8fa"
+  }
+}

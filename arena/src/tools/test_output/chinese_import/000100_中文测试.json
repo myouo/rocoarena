@@ -1,0 +1,17 @@
+{
+  "id": 100,
+  "name": "中文测试",
+  "description": "这是测试描述",
+  "skillType": 0,
+  "type": "Fire",
+  "power": 60,
+  "maxPP": 25,
+  "deletable": true,
+  "priority": 8,
+  "_meta": {
+    "imported_at": "2025-11-10T05:58:53.746458",
+    "batch": "chinese",
+    "source_row": 2,
+    "hash": "e8832a4713fddd62aa11c923a55311f9"
+  }
+}
