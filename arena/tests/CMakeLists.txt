@@ -15,6 +15,10 @@ set(COMMON_LIBS
     lua5.3
 )
 
+set(ENTITY_INCLUDES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/entity
+)
+
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in
     ${CMAKE_CURRENT_BINARY_DIR}/config.hpp
@@ -33,5 +37,13 @@ add_executable(testLua
     core/testLua.cpp
     ../src/core/scripter/scripter.cpp
 )
+
+# testEntity
+add_executable(testEntity
+    entity/testEntity.cpp
+    ../src/entity/Pet.cpp
+)
+
 target_include_directories(testLua PRIVATE ${COMMON_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(testEntity PRIVATE ${ENTITY_INCLUDES})
 target_link_libraries(testLua PRIVATE ${COMMON_LIBS})
