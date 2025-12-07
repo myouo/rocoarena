@@ -5,19 +5,15 @@ sudo apt install lua5.3 lublua5.3-dev
 */
 #include <sol/sol.hpp>
 #include <string>
-#include <iostream>
 
-#define ANSI_COLOR_RED     "\x1b[31m"
-#define ANSI_COLOR_GREEN   "\x1b[32m"
-#define ANSI_COLOR_YELLOW  "\x1b[33m"
-#define ANSI_COLOR_BLUE    "\x1b[34m"
-#define ANSI_COLOR_RESET   "\x1b[0m"
+#include <stdexcept>
 
-#define RED_PRINT (std::cout << ANSI_COLOR_RED << "[Scripter] " << ANSI_COLOR_RESET)
-#define RED_CERR (std::cerr << ANSI_COLOR_RED << "[Scripter] " << ANSI_COLOR_RESET)
+#include "../logger/logger.h"
 
 class Scripter {
 public:
+    static constexpr const char* module() { return "Scripter"; }
+
     // construct
     Scripter();
     // run Lua script
@@ -34,7 +30,8 @@ public:
     Ret call(const std::string& funcName, Args... args) {
         sol::function func = lua[funcName];
         if(!func.valid()) {
-            throw std::runtime_error("[Scripter] Function '" + funcName + "' not found in Lua.");
+            LOG_ERROR(module(), "Function '", funcName, "' not found in Lua.");
+            throw std::runtime_error("Function '" + funcName + "' not found in Lua.");
         }
         return func(args...);
    

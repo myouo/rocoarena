@@ -5,6 +5,10 @@
 #include <stdexcept>
 #include <regex>
 
+namespace {
+constexpr char kModule[] = "JSONLoader";
+}
+
 using json = nlohmann::json;
 
 JSONLoader::JSONLoader(const json& j) : root_(j) {}
@@ -13,11 +17,12 @@ void JSONLoader::loadFromFile(const std::string& filePath) {
     std::lock_guard lock(mtx_);
     std::ifstream ifs(filePath);
     if(!ifs) {
+        LOG_ERROR(kModule, "Failed to open JSON file: ", filePath);
         throw std::runtime_error("Failed to open JSON file: " + filePath);
     }
     try {
         ifs >> root_;
-        GREEN_PRINT << "opened JSON file.\n";
+        LOG_INFO(kModule, "Loaded JSON file: ", filePath);
     } catch(const std::exception& e) {
         throw std::runtime_error(std::string("Failed to open JSON file: ") + e.what());
     }
@@ -27,6 +32,7 @@ void JSONLoader::loadFromString(const std::string& data) {
     std::lock_guard lock(mtx_);
     try {
         root_ = json::parse(data);
+        LOG_INFO(kModule, "Loaded JSON from string input.");
     } catch(const std::exception& e) {
         throw std::runtime_error(std::string("Failed to parse JSON string: ") + e.what());
     }
@@ -41,6 +47,7 @@ void JSONLoader::saveToFile(const std::string& filePath, bool pretty) const {
     
     std::ofstream ofs(filePath);
     if(!ofs) {
+        LOG_ERROR(kModule, "Failed to open JSON file for writing: ", filePath);
         throw std::runtime_error(std::string("Failed to open JSON file for writing: ") + filePath);
     }
     
@@ -49,6 +56,7 @@ void JSONLoader::saveToFile(const std::string& filePath, bool pretty) const {
     } else {
         ofs << root_.dump();
     }
+    LOG_INFO(kModule, "Saved JSON file: ", filePath);
 }
 
 std::vector<std::string> JSONLoader::splitPath(const std::string& path) {
@@ -127,7 +135,7 @@ json* JSONLoader::navigateCreate(const std::vector<std::string>& parts) {
             }
             cur = &((*cur)[key]);
         }
-        if(!idx.has_value()) {
+        if(idx.has_value()) {
             if(!cur -> is_array()) {
                 *cur = json::array();
             }
@@ -167,7 +175,7 @@ void JSONLoader::remove(const std::string& path) {
         if(parent -> is_array()) {
             size_t i = idx.value();
             if(i < parent -> size()) {
-                parent -> erase(parent -> begin() + 1);
+                parent -> erase(parent -> begin() + i);
             }
         }
     }

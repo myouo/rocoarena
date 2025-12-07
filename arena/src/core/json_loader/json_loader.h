@@ -1,21 +1,12 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
-#include <optional>
-#include <mutex>
 #include <fstream>
+#include <mutex>
+#include <optional>
 #include <vector>
-#include <iostream>
 
-#define ANSI_COLOR_RED     "\x1b[31m"
-#define ANSI_COLOR_GREEN   "\x1b[32m"
-#define ANSI_COLOR_YELLOW  "\x1b[33m"
-#define ANSI_COLOR_BLUE    "\x1b[34m"
-#define ANSI_COLOR_RESET   "\x1b[0m"
-
-#define GREEN_PRINT (std::cout << ANSI_COLOR_GREEN << "[JSONLoader] " << ANSI_COLOR_RESET)
-#define GREEN_CERR (std::cerr << ANSI_COLOR_GREEN << "[JSONLoader] " << ANSI_COLOR_RESET)
-
+#include "../logger/logger.h"
 
 class JSONLoader {
 public:

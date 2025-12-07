@@ -2,27 +2,27 @@
 
 Scripter::Scripter() {
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string, sol::lib::table);
-    RED_PRINT << "Lua initialized.\n";
+    LOG_INFO(module(), "Lua initialized.");
 }
 
-
 bool Scripter::runScript(const std::string& filename) {
-     try {
-            lua.script_file(filename);
-            RED_PRINT << "Loaded Script: " << filename << '\n';
-            return true;
-        } catch(const sol::error& e) {
-            RED_PRINT << "Running Script: " << e.what() << "\n";
-            return false;
-        }
+    try {
+        lua.script_file(filename);
+        LOG_INFO(module(), "Loaded script: ", filename);
+        return true;
+    } catch(const sol::error& e) {
+        LOG_ERROR(module(), "Error running script ", filename, ": ", e.what());
+        return false;
+    }
 }
 
 bool Scripter::runString(const std::string& code) {
     try {
         lua.script(code);
+        LOG_INFO(module(), "Executed code string.");
         return true;
     } catch(const sol::error& e) {
-        RED_CERR << "Error Running Code: " << e.what() << "\n";
+        LOG_ERROR(module(), "Error running code string: ", e.what());
         return false;
     }
 }
