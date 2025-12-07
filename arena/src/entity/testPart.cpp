@@ -28,5 +28,7 @@ int main() {
     printf("the result2 is : %lf\n", res2);
     printf("the result3 is : %lf\n", res3);
     std::cout << "Attr 2 string :" << Attr2StringEN[(int)AttrType::dFire] << "\n";
+
+    delete sp1;
     return 0;
 }

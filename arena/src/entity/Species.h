@@ -24,7 +24,7 @@ typedef struct BasicStatus{
 class Species{
 public:
     using Ptr = std::shared_ptr<const Species>;
-    const int id() const noexcept {return id_;}
+    int id() const noexcept {return id_;}
     const std::string& name() const noexcept {return name_;}
     const std::array<AttrType, 2>& attrs() const noexcept {return attrs_;}
     Species(int id, std::string name, std::array<AttrType, 2> attrs, BS bs) : id_(id), name_(name), attrs_(attrs), bs_(bs) {};

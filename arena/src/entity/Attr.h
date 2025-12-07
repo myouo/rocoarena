@@ -23,13 +23,13 @@ enum class AttrType {
     Steel,
     Light,
     dFire,
-    dWater,
     dGrass,
+    dWater,
     COUNT,
     None
 };
 
-static std::unordered_map<std::string, AttrType> AttrFromEN = {
+inline std::unordered_map<std::string, AttrType> AttrFromEN = {
     {"Normal", AttrType::Normal},
     {"Fire", AttrType::Fire},
     {"Water", AttrType::Water},
@@ -49,11 +49,11 @@ static std::unordered_map<std::string, AttrType> AttrFromEN = {
     {"Steel", AttrType::Steel},
     {"Light", AttrType::Light},
     {"dFire", AttrType::dFire},
-    {"dWater", AttrType::dGrass},
-    {"dGrass", AttrType::dWater}
+    {"dGrass", AttrType::dGrass},
+    {"dWater", AttrType::dWater}
 };
 
-static std::unordered_map<std::string, AttrType> AttrFromZH = {
+inline std::unordered_map<std::string, AttrType> AttrFromZH = {
     {"普通", AttrType::Normal},
     {"火", AttrType::Fire},
     {"水", AttrType::Water},
@@ -77,7 +77,7 @@ static std::unordered_map<std::string, AttrType> AttrFromZH = {
     {"神水", AttrType::dWater}
 };
 
-static const std::string Attr2StringEN[] = {
+inline const std::string Attr2StringEN[] = {
     "Normal", "Fire", "Water", "Electric", "Grass",
     "Ice", "Fighting", "Poison", "Ground", "Flying",
     "Cute", "Worm", "Rock", "Ghost", "Dragon", "Demon",
