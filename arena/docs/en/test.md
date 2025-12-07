@@ -1,14 +1,14 @@
 # TEST
 ### How to build?
 
-Enter the fillowing commands in your shell (usually bash in Linux).
+Enter the following commands in your shell (usually bash in Linux).
 ```shell
 mkdir build && cd build
 cmake ..
 make
 ```
 
-Error? Don't worry, Maybe you didn't install cmake, just
+Error? Don't worry, maybe you didn't install cmake, just
 ```shell
 sudo apt install -y cmake
 ```
@@ -45,7 +45,7 @@ lua load success!
 ```
 `myo` is my username and `Myo` is the machine name, this will be different on other computers.
 
-The output includes colored portions, which are provided by the logger. Meanwhile, clever you must find that there's an error at testLua in outputs. You may doubt why it compiles successfully but throws error. Actually, I executed the statement 
+The output includes colored portions, which are provided by the logger. Meanwhile, clever you will have noticed that an error appears in the testLua output. You may doubt why it compiles successfully but throws error. Actually, I executed the statement 
 ```shell
 scr.runString("printf(1111)");
 ``` 
