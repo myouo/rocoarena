@@ -1,1 +1,0 @@
-/usr/bin/c++     CMakeFiles/testJSON.dir/core/testJSON.cpp.o CMakeFiles/testJSON.dir/root/rocoarena/arena/src/core/json_loader/json_loader.cpp.o  -o testJSON 

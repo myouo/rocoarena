@@ -1,1 +1,0 @@
-/usr/bin/c++     CMakeFiles/testLua.dir/core/testLua.cpp.o CMakeFiles/testLua.dir/root/rocoarena/arena/src/core/scripter/scripter.cpp.o  -o testLua  -llua5.3 

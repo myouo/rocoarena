@@ -1,4 +1,0 @@
-/root/rocoarena/arena/tests/build/CMakeFiles/rebuild_cache.dir
-/root/rocoarena/arena/tests/build/CMakeFiles/edit_cache.dir
-/root/rocoarena/arena/tests/build/CMakeFiles/testLua.dir
-/root/rocoarena/arena/tests/build/CMakeFiles/testJSON.dir
