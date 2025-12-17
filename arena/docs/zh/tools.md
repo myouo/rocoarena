@@ -1,4 +1,4 @@
-# Rocoarena Tools 技能数据管理工具
+# Rocoarena Tools 数据管理工具
 
 **environment: rocoarena**
 
@@ -8,44 +8,47 @@ conda activate rocoarena
 
 ## 工具概览
 
-本工具集用于管理和处理技能数据，包括数据导入、验证、差异比对和hash计算。
+工具集覆盖技能数据的导入/验证/比对/哈希，以及宠物基础数据与可学技能的导入。
 
 ### 工具列表
 
-1. **skill_importer.py** - 技能数据导入工具
-2. **skill_validator.py** - 技能数据验证器
-3. **diff_exporter.py** - 差异比对和导出工具
-4. **hash_utils.py** - Hash计算工具
+1. **skill_importer.py** - 技能数据导入（Excel/CSV → JSON）
+2. **skill_validator.py** - 技能数据验证
+3. **diff_exporter.py** - 技能数据差异比对与导出
+4. **pet_importer.py** - 宠物基础数据与可学技能导入（CSV → SQLite）
+5. **hash_utils.py** - 稳定 JSON 序列化与哈希辅助
+6. **demo.py / test_tools.py** - 演示与测试入口
 
 ---
 
 ## 1. skill_importer.py - 技能数据导入工具
 
-从Excel或CSV文件批量导入技能数据到JSON格式。
+从 Excel 或 CSV 批量导入技能数据到 JSON（默认输出到 `assets/skills/skills_src`，脚本目录默认为 `assets/skills/scripts`）。
 
 ### 功能特性
 
-- 支持Excel (.xlsx, .xls) 和 CSV 文件
-- 自动类型转换和数据验证
+- 支持 Excel (.xlsx, .xls) 与 CSV，最大默认 50MB
+- 自动类型转换和批量验证（可 `--no-validate` 跳过）
+- 多编码尝试读取（utf-8 / utf-8-sig / gbk / gb2312）
 - 灵活的列名映射（支持中英文列名）
-- 自动生成文件hash值
-- 详细的错误和警告报告
+- 生成 `_meta`（导入时间、批次、行号）与哈希（含脚本内容）写入 JSON
+- 详细错误/警告收集
 
 ### 使用方法
 
 #### 基本用法
 
 ```bash
-# 从Excel文件导入
+# 从 Excel 文件导入
 python skill_importer.py skills_data.xlsx
 
-# 从CSV文件导入
+# 从 CSV 文件导入
 python skill_importer.py skills_data.csv
 
-# 指定Excel工作表
+# 指定 Excel 工作表
 python skill_importer.py skills_data.xlsx --sheet "Sheet2"
 
-# 指定CSV编码
+# 指定 CSV 编码
 python skill_importer.py skills_data.csv --encoding gbk
 
 # 指定输出目录
@@ -75,22 +78,23 @@ python skill_importer.py skills_data.xlsx --no-validate
 | name | string | 技能名称 | "火焰拳" |
 | skillType | int | 技能类型 (0-物理, 1-魔法, 2-状态) | 0 |
 | type | string | 属性类型 | "Fire" |
+| description | string | 技能描述（最长300字符） | "用火焰攻击目标" |
+| maxPP | int | 最大PP值 (>0) | 15 |
 
 #### 可选字段
 
 | 字段名 | 类型 | 默认值 | 说明 |
 |--------|------|--------|------|
-| description | string | "" | 技能描述 |
 | power | int | 0 | 技能威力 |
-| maxPP | int | 0 | 最大PP值 |
 | deletable | bool | true | 是否可删除 |
-| priority | int | 8 | 优先级 (0-16) |
-| scripterPath | string | "" | Lua脚本路径 |
+| priority | int | 8 | 优先级 (0-12) |
+| scripterPath | string | "" | Lua脚本相对路径（默认基于 `assets/skills/scripts`） |
+| guaranteedHit | bool | false | 是否必中 |
 
 #### 有效的属性类型（type字段）
 
 ```
-None, Normal, Fire, Water, Electric, Grass, Ice, Fighting, Poison,
+Normal, Fire, Water, Electric, Grass, Ice, Fighting, Poison,
 Ground, Flying, Cute, Worm, Rock, Ghost, Dragon, Demon, Steel,
 Light, dFire, dGrass, dWater
 ```
@@ -116,14 +120,15 @@ id,name,description,skillType,type,power,maxPP,deletable,priority,scripterPath
 - ID: 必须为正整数，范围 1-999999
 - 名称: 不能为空，最大100字符，不包含非法字符
 - 技能类型: 必须为 0、1 或 2
-- 属性类型: 必须在有效列表中
+- 属性类型: 必须在有效列表中，且不能为 None
+- 描述: 不能为空，最长300字符
 - 威力: 非负整数，>999 时警告
-- PP值: 非负整数，>99 时警告
-- 优先级: 0-16之间的整数
-- 可删除标志: 布尔值
+- PP值: 正整数，>99 时警告
+- 优先级: 0-12之间的整数
+- 可删除/必中标志: 布尔值
 
 #### 路径验证
-- 脚本路径: 检查文件是否存在，是否为.lua文件
+- 脚本路径: 拦截非法字符/路径遍历，限制在 `assets/skills/scripts` 下，非 `.lua` 给警告，缺文件给警告
 
 #### 批量验证
 - ID重复检查
@@ -141,8 +146,10 @@ validator = SkillValidator()
 skill_data = {
     "id": 1,
     "name": "测试技能",
-    "skillType": 0,
-    "type": "Normal"
+    "description": "技能描述",
+    "skillType": 0,   # 0:物理 1:魔法 2:状态
+    "type": "Normal",
+    "maxPP": 20
 }
 
 is_valid = validator.validate_skill(skill_data)
@@ -159,7 +166,7 @@ is_valid, errors, warnings = validator.validate_batch(skills_list)
 
 ## 3. diff_exporter.py - 差异比对工具
 
-比较两个版本的技能数据，生成差异报告。
+比较两个版本的技能数据目录（JSON），生成差异报告（默认技能目录 `assets/skills/skills_src`，脚本目录 `assets/skills/scripts`）。
 
 ### 功能特性
 
@@ -211,9 +218,41 @@ python diff_exporter.py /path/to/old_skills --output report.json --quiet
 
 ---
 
-## 4. hash_utils.py - Hash计算工具
+## 4. pet_importer.py - 宠物与可学技能导入
 
-计算技能数据的MD5 hash值，用于版本控制和变更检测。
+将宠物基础数据与宠物-技能映射从 CSV 导入到 SQLite（默认输出 `assets/pets/pets.db`，会清空并重建表）。
+
+### 输入文件
+
+1) **宠物基础数据 CSV（必需列）**
+- id, name, attr1, bEne, bAtk, bDef, bSpA, bSpD, bSpe
+- 可选列: attr2（可为空，默认 None）
+- 属性支持中/英别名：火/水/电/草/冰/武/毒/土/翼/萌/虫/石/幽/龙/恶魔/机械/光/神火/神草/神水/none 等。
+
+2) **宠物-技能映射 CSV（必需列）**
+- pet_id, skill_id
+
+### 验证
+- 宠物字段非负整数校验，名称必填
+- 属性必须在允许集合内
+- 关联的 pet_id 必须存在；重复宠物或重复关联会报错
+
+### 表结构
+- `pets(id, name, attr1, attr2, bEne, bAtk, bDef, bSpA, bSpD, bSpe)`
+- `pet_skills(pet_id, skill_id)` 带主键约束、外键到 pets
+
+### 使用方法
+
+```bash
+python pet_importer.py --pets-csv pets.csv --pet-skills-csv pet_skills.csv \
+  --db-path assets/pets/pets.db --encoding utf-8
+```
+
+---
+
+## 5. hash_utils.py - Hash计算工具
+
+计算技能数据的 MD5 hash 值，用于版本控制和变更检测。
 
 ### 功能
 
@@ -232,6 +271,13 @@ script_content = "-- Lua script content"
 hash_value = hash_skillData(skill_data, script_content)
 print(f"Hash: {hash_value}")
 ```
+
+---
+
+## 演示与测试
+
+- 快速演示: `python demo.py`（会演示导入、验证、比对、模板、性能）
+- 运行测试: `python test_tools.py`
 
 ---
 
@@ -287,10 +333,10 @@ print(f"Hash: {hash_value}")
 
 ### 必需库
 ```bash
-# 基础功能
+# Excel 支持
 pip install pandas openpyxl
 
-# 可选（用于xlsx支持）
+# 可选（额外的 xls/xlsx 支持）
 pip install xlrd
 ```
 
@@ -386,8 +432,8 @@ python -c "from skill_validator import SkillValidator; print('OK')"
 
 ### v1.0.0 (2024-11-10)
 - 初始版本
-- 实现Excel/CSV导入功能
+- 实现 Excel/CSV 导入功能
 - 实现数据验证器
 - 实现差异比对工具
-- 完善hash计算功能
+- 完善 hash 计算功能
 - 添加详细文档
