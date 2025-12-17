@@ -21,10 +21,7 @@ public:
     // run Lua string
     bool runString(const std::string& code);
     // get Lua var
-    template <typename T>
-    T get(const std::string& name) const {
-        return lua[name];
-    };
+    template <typename T> T get(const std::string& name) const { return lua[name]; }
     // call Lua function
     template <typename Ret, typename... Args> 
     Ret call(const std::string& funcName, Args... args) {

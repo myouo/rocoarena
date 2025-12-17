@@ -25,18 +25,30 @@ debian类linux指令：
 class Database {
 public:
     //构造与析构
-    explicit Database(const std::string& dbPath);
+  explicit Database(const std::string &dbPath) {
+    if (sqlite3_open(dbPath.c_str(), &db) != SQLITE_OK) {
+      throw std::runtime_error("Failed to open DATABASE :" +
+                               std::string(sqlite3_errmsg(db)));
+    }
+
+    exec("PRAGMA journal_mode = WAL;");
+    exec("PRAGMA synchronous = NORMAL;");
+    exec("PRAGMA cache_size = 10000;");
+  }
     ~Database();
+
+    Database(const Database &) = delete;
+    Database &operator=(const Database &) = delete;
+    Database(Database &&) = delete;
+    Database &operator=(Database &&) = delete;
 
     // 执行无返回值的 SQL (建表、更新、删除等)
     void exec(const std::string& sql);
     // 执行带参数的语句 (如 INSERT/UPDATE)
     void execute(const std::string& sql, const std::vector<std::string>& params = {});
     // 查询返回多行结果
-    std::vector<std::unordered_map<std::string, std::string>> query(
-        const std::string& sql,
-        const std::vector<std::string>& params = {}
-    ) {};
+    std::vector<std::unordered_map<std::string, std::string>>
+    query(const std::string &sql, const std::vector<std::string> &params = {});
     // 开始事务
     void begin() { exec("BEGIN TRANSACTION;"); }
     void commit() { exec("COMMIT;"); }
@@ -44,6 +56,6 @@ public:
 
 private:
     sqlite3* db = nullptr;
-    void bindParams(sqlite3_stmt* stmt, const std::vector<std::string>& params) {};
-    void stepAndFinalize(sqlite3_stmt* stmt) {};
+    void bindParams(sqlite3_stmt *stmt, const std::vector<std::string> &params);
+    void stepAndFinalize(sqlite3_stmt *stmt);
 };

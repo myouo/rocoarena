@@ -24,7 +24,7 @@ void JSONLoader::loadFromFile(const std::string& filePath) {
         ifs >> root_;
         LOG_INFO(kModule, "Loaded JSON file: ", filePath);
     } catch(const std::exception& e) {
-        throw std::runtime_error(std::string("Failed to open JSON file: ") + e.what());
+        throw std::runtime_error(std::string("Failed to parse JSON file: ") + e.what());
     }
 }
 
@@ -146,6 +146,27 @@ json* JSONLoader::navigateCreate(const std::vector<std::string>& parts) {
     return cur;
 }
 
+json* JSONLoader::navigateExisting(const std::vector<std::string>& parts) {
+    json* cur = &root_;
+    for(const auto& p : parts) {
+        std::string key; std::optional<size_t> idx;
+        isIndexPart(p, key, idx);
+        if(!key.empty()) {
+            if(!cur->is_object()) return nullptr;
+            auto it = cur->find(key);
+            if(it == cur->end()) return nullptr;
+            cur = &(*it);
+        }
+        if(idx.has_value()) {
+            if(!cur->is_array()) return nullptr;
+            size_t i = idx.value();
+            if(i >= cur->size()) return nullptr;
+            cur = &((*cur)[i]);
+        }
+    }
+    return cur;
+}
+
 bool JSONLoader::has(const std::string& path) const {
     std::lock_guard lock(mtx_);
     auto parts = splitPath(path);
@@ -162,7 +183,8 @@ void JSONLoader::remove(const std::string& path) {
 
     std::vector<std::string> parentParts(parts.begin(), parts.end() - 1);
     const std::string& last = parts.back();
-    json* parent = navigateCreate(parentParts);
+    json* parent = navigateExisting(parentParts);
+    if(!parent) return;
     
     std::string key; std::optional<size_t> idx;
     isIndexPart(last, key, idx);

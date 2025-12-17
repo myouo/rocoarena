@@ -42,6 +42,7 @@ private:
     static std::vector<std::string> splitPath(const std::string& path);
 
     const json* navigateConst(const std::vector<std::string>& parts) const;
+    json* navigateExisting(const std::vector<std::string>& parts);
     json* navigateCreate(const std::vector<std::string>& parts);
 
     static bool isIndexPart(const std::string& part, std::string& key, std::optional<size_t>& index);

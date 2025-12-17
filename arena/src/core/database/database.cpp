@@ -1,15 +1,5 @@
 #include "database.h"
 
-explicit Database::Database(const std::string& dbPath) {
-    if(sqlite3_open(dbPath.c_str(), &db) != SQLITE_OK) {
-        throw std::runtime_error("Failed to open DATABASE :" + std::string(sqlite3_errmsg(db)));
-    }
-
-    exec("PRAGMA jornal_mode = WAL;");
-    exec("PRAGMA synchronous = NORMAL;");
-    exec("PRAGMA cache_size = 10000;");
-}
-
 Database::~Database() {
     if(db) sqlite3_close(db);
 }
