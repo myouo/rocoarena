@@ -7,6 +7,7 @@ add_compile_options(-Wall -O2)
 
 # 公共部分
 set(COMMON_INCLUDES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/core
     ${CMAKE_CURRENT_SOURCE_DIR}/../external
     /usr/include/lua5.3
@@ -16,6 +17,7 @@ set(COMMON_LIBS
 )
 
 set(ENTITY_INCLUDES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/entity
 )
 
@@ -29,7 +31,7 @@ add_executable(testJSON
     core/testJSON.cpp
     ../src/core/json_loader/json_loader.cpp
 )
-target_include_directories(testJSON PRIVATE ${COMMON_INCLUDES})
+target_include_directories(testJSON PRIVATE ${COMMON_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
 # target_link_libraries(testJSON PRIVATE ${COMMON_LIBS})
 
 # testLua
@@ -42,6 +44,7 @@ add_executable(testLua
 add_executable(testEntity
     entity/testEntity.cpp
     ../src/entity/Pet.cpp
+    ../src/battle/Buff.cpp
 )
 
 target_include_directories(testLua PRIVATE ${COMMON_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
