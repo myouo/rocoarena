@@ -23,25 +23,37 @@ void BattleSystem::endBattle(const std::string& reason) {
     LOG_INFO(module(), "Battle ended. Reason: ", reason);
 }
 
+void BattleSystem::onTurnStart(Player& p1, Player& p2) {
+    // Hook for start-of-turn effects (weather, terrain, buffs, etc.).
+    (void)p1;
+    (void)p2;
+}
+
+void BattleSystem::onTurnEnd(Player& p1, Player& p2) {
+    // Hook for end-of-turn effects (residual damage, timers, cleanup, etc.).
+    (void)p1;
+    (void)p2;
+}
+
 std::pair<Action*, Action*> BattleSystem::decideOrder(Action& action1, Action& action2, Pet& pet1, Pet& pet2) {
     const int p1Priority = action1.priority();
     const int p2Priority = action2.priority();
 
     if (p1Priority != p2Priority) {
-        return (p1Priority > p2Priority) ? std::pair<Action*, Action*>{ &action1, &action2 }
-                                         : std::pair<Action*, Action*>{ &action2, &action1 };
+        return (p1Priority > p2Priority) ? std::pair<Action*, Action*>{&action1, &action2}
+                                         : std::pair<Action*, Action*>{&action2, &action1};
     }
 
     const int p1Speed = pet1.currentSpeed();
     const int p2Speed = pet2.currentSpeed();
     if (p1Speed != p2Speed) {
-        return (p1Speed > p2Speed) ? std::pair<Action*, Action*>{ &action1, &action2 }
-                                   : std::pair<Action*, Action*>{ &action2, &action1 };
+        return (p1Speed > p2Speed) ? std::pair<Action*, Action*>{&action1, &action2}
+                                   : std::pair<Action*, Action*>{&action2, &action1};
     }
 
     const bool firstIsP1 = RNG::instance().range<int>(0, 1) == 0;
-    return firstIsP1 ? std::pair<Action*, Action*>{ &action1, &action2 }
-                     : std::pair<Action*, Action*>{ &action2, &action1 };
+    return firstIsP1 ? std::pair<Action*, Action*>{&action1, &action2}
+                     : std::pair<Action*, Action*>{&action2, &action1};
 }
 
 void BattleSystem::takeTurn(Action& action1, Action& action2) {
@@ -71,6 +83,9 @@ void BattleSystem::takeTurn(Action& action1, Action& action2) {
 
     ++turnCounter_;
     LOG_INFO(module(), "Starting turn ", turnCounter_);
+
+    onTurnStart(*player1_, *player2_);
+    if (battleEnded_) return;
 
     Pet& pet1 = player1_->activePet();
     Pet& pet2 = player2_->activePet();
@@ -102,5 +117,9 @@ void BattleSystem::takeTurn(Action& action1, Action& action2) {
         endBattle("All opponent pets fainted.");
     } else if (!secondPlayer->hasUsablePets()) {
         endBattle("All opponent pets fainted.");
+    }
+
+    if (!battleEnded_) {
+        onTurnEnd(*player1_, *player2_);
     }
 }
