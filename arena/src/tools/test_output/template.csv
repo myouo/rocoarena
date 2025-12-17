@@ -1,2 +1,0 @@
-﻿id,name,description,skillType,type,power,maxPP,deletable,priority,scripterPath
-1,示例技能,这是一个示例技能描述,0,Normal,40,35,true,8,skills/example.lua
