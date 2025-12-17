@@ -1,8 +1,13 @@
+#include <sstream>
+
+#include <config.hpp>
 #include <json_loader/json_loader.h>
 
 int main() {
     JSONLoader loader;
-    std::string dir = "../testcases/test.json";
+    std::stringstream ss;
+    ss << DIR_CURRENT << "/testcases/test.json";
+    std::string dir = ss.str();
     loader.loadFromFile(dir);
     std::string any_ = loader.get<std::string>("title", "DEFAULT_PRINT");
     std::string any_1 = loader.get<std::string>("author", "DEFAULT_PRINT");
