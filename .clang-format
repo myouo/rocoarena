@@ -1,0 +1,47 @@
+BasedOnStyle: LLVM
+
+# 缩进
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+
+# 大括号风格（和你现在代码一致）
+BreakBeforeBraces: Attach
+AllowShortIfStatementsOnASingleLine: true
+AllowShortLoopsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: Inline
+
+# 对齐
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignOperands: true
+
+# 空格控制
+SpaceBeforeParens: ControlStatements
+SpacesInParentheses: false
+SpaceInEmptyParentheses: false
+
+# 不强拆数学表达式（你这里很多计算）
+BreakBeforeBinaryOperators: None
+PenaltyBreakBeforeFirstCallParameter: 1000
+PenaltyBreakAssignment: 1000
+
+# 保留你手写的数组初始化格式
+Cpp11BracedListStyle: false
+
+# switch / case
+IndentCaseLabels: true
+
+# 注释
+ReflowComments: false
+CommentPragmas: '^IWYU pragma:'
+
+# include 不乱排（很重要）
+SortIncludes: false
+
+# 行宽（你的代码明显不是 80 风格）
+ColumnLimit: 120
+
+# 指针风格
+PointerAlignment: Left

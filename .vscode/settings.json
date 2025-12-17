@@ -61,5 +61,6 @@
         "mutex": "cpp",
         "shared_mutex": "cpp",
         "thread": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "/home/myo/rocoarena/arena/tests"
 }
