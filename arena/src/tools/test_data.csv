@@ -6,6 +6,6 @@ id,name,description,skillType,type,power,maxPP,deletable,priority,scripterPath
 5,催眠术,施加催眠暗示使对手陷入睡眠状态,2,Cute,0,20,true,8,
 6,影子球,投掷一团阴影进行攻击,1,Ghost,80,15,true,8,
 7,龙之波动,从口中发出冲击波进行攻击,1,Dragon,85,10,true,8,
-8,神速,以迅雷不及掩耳之势扑向对手,0,Normal,80,5,false,16,
-9,守住,完全抵挡对手的攻击,2,Normal,0,10,false,15,
+8,神速,以迅雷不及掩耳之势扑向对手,0,Normal,80,5,false,12,
+9,守住,完全抵挡对手的攻击,2,Normal,0,10,false,10,
 10,剑舞,激烈地跳起战舞提高气势,2,Normal,0,20,true,8,

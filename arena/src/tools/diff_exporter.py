@@ -22,7 +22,8 @@ class SkillDiffExporter:
             skills_dir: 技能数据目录
             scripts_dir: 脚本目录
         """
-        base_dir = Path(__file__).parent.parent / "assets"
+        root_dir = Path(__file__).resolve().parents[2]
+        base_dir = root_dir / "assets"
         self.skills_dir = skills_dir or (base_dir / "skills/skills_src").resolve()
         self.scripts_dir = scripts_dir or (base_dir / "skills/scripts").resolve()
 

@@ -22,10 +22,12 @@ class SkillValidator:
 
     # 有效的技能类型
     VALID_SKILL_TYPES = {
-        0: "Physical",
-        1: "Magical",
-        2: "Status"
+        0: "Physical",  # 物理
+        1: "Magical",   # 魔法
+        2: "Status"     # 状态
     }
+
+    MAX_PRIORITY = 12
 
     def __init__(self, script_base_dir: Optional[Path] = None):
         """
@@ -34,7 +36,8 @@ class SkillValidator:
         Args:
             script_base_dir: 脚本文件的基础目录
         """
-        self.script_base_dir = script_base_dir or Path(__file__).parent.parent / "assets/skills/scripts"
+        root_dir = Path(__file__).resolve().parents[2]
+        self.script_base_dir = script_base_dir or root_dir / "assets/skills/scripts"
         self.errors: List[str] = []
         self.warnings: List[str] = []
 
@@ -57,7 +60,7 @@ class SkillValidator:
         is_valid = True
 
         # 验证必需字段
-        required_fields = ["id", "name", "skillType", "type"]
+        required_fields = ["id", "name", "skillType", "type", "description", "maxPP"]
         for field in required_fields:
             if field not in skill_data or skill_data[field] is None or skill_data[field] == "":
                 self.errors.append(f"{prefix}Missing required field: {field}")
@@ -82,6 +85,10 @@ class SkillValidator:
         if not self._validate_attr_type(skill_data.get("type"), prefix):
             is_valid = False
 
+        # 验证描述
+        if not self._validate_description(skill_data.get("description"), prefix):
+            is_valid = False
+
         # 验证威力
         if not self._validate_power(skill_data.get("power", 0), prefix):
             is_valid = False
@@ -97,6 +104,11 @@ class SkillValidator:
         # 验证deletable
         if not self._validate_deletable(skill_data.get("deletable", True), prefix):
             is_valid = False
+
+        # 验证 guaranteedHit（可选）
+        if "guaranteedHit" in skill_data:
+            if not self._validate_boolean_flag(skill_data.get("guaranteedHit"), "guaranteedHit", prefix):
+                is_valid = False
 
         # 验证脚本路径
         if "scripterPath" in skill_data and skill_data["scripterPath"]:
@@ -174,8 +186,28 @@ class SkillValidator:
         if attr_type not in self.VALID_ATTR_TYPES:
             self.errors.append(
                 f"{prefix}Invalid attribute type: {attr_type}. "
-                f"Must be one of: {sorted(self.VALID_ATTR_TYPES)}"
+                f"Must be one of: {sorted(self.VALID_ATTR_TYPES - {'None'})}"
             )
+            return False
+
+        if attr_type == "None":
+            self.errors.append(f"{prefix}Attribute type 'None' is not allowed for skills")
+            return False
+
+        return True
+
+    def _validate_description(self, description, prefix: str) -> bool:
+        """验证技能描述"""
+        if not isinstance(description, str):
+            self.errors.append(f"{prefix}Description must be string, got: {type(description).__name__}")
+            return False
+
+        if not description.strip():
+            self.errors.append(f"{prefix}Description cannot be empty")
+            return False
+
+        if len(description) > 300:
+            self.errors.append(f"{prefix}Description too long (max 300 characters)")
             return False
 
         return True
@@ -198,8 +230,8 @@ class SkillValidator:
         """验证PP值"""
         try:
             pp_int = int(max_pp)
-            if pp_int < 0:
-                self.errors.append(f"{prefix}MaxPP cannot be negative, got: {max_pp}")
+            if pp_int <= 0:
+                self.errors.append(f"{prefix}MaxPP must be positive, got: {max_pp}")
                 return False
             if pp_int > 99:
                 self.warnings.append(f"{prefix}MaxPP is very high ({max_pp}), please verify")
@@ -212,8 +244,10 @@ class SkillValidator:
         """验证优先级"""
         try:
             priority_int = int(priority)
-            if priority_int < 0 or priority_int > 16:
-                self.errors.append(f"{prefix}Priority must be between 0-16, got: {priority}")
+            if priority_int < 0 or priority_int > self.MAX_PRIORITY:
+                self.errors.append(
+                    f"{prefix}Priority must be between 0-{self.MAX_PRIORITY}, got: {priority}"
+                )
                 return False
             return True
         except (ValueError, TypeError):
@@ -222,17 +256,25 @@ class SkillValidator:
 
     def _validate_deletable(self, deletable, prefix: str) -> bool:
         """验证是否可删除标志"""
-        if not isinstance(deletable, bool):
-            # 尝试转换字符串
-            if isinstance(deletable, str):
-                lower_val = deletable.lower()
-                if lower_val in ("true", "1", "yes"):
-                    return True
-                elif lower_val in ("false", "0", "no"):
-                    return True
-            self.errors.append(f"{prefix}Deletable must be boolean, got: {deletable}")
-            return False
-        return True
+        return self._validate_boolean_flag(deletable, "deletable", prefix)
+
+    def _validate_boolean_flag(self, value, field_name: str, prefix: str) -> bool:
+        """通用布尔标志验证"""
+        if isinstance(value, bool):
+            return True
+
+        if isinstance(value, (int, float)) and value in (0, 1):
+            return True
+
+        if isinstance(value, str):
+            lower_val = value.lower()
+            if lower_val in ("true", "1", "yes", "y", "是"):
+                return True
+            if lower_val in ("false", "0", "no", "n", "否"):
+                return True
+
+        self.errors.append(f"{prefix}{field_name} must be boolean, got: {value}")
+        return False
 
     def _validate_script_path(self, script_path: str, prefix: str) -> bool:
         """验证脚本路径"""

@@ -85,6 +85,7 @@ class TestRunner:
         valid_skill = {
             "id": 1,
             "name": "测试技能",
+            "description": "这是一个有效的技能描述",
             "skillType": 0,
             "type": "Normal",
             "power": 50,
@@ -107,8 +108,10 @@ class TestRunner:
         invalid_skill = {
             "id": -1,
             "name": "测试",
+            "description": "描述",
             "skillType": 0,
-            "type": "Normal"
+            "type": "Normal",
+            "maxPP": 10
         }
         result = validator.validate_skill(invalid_skill)
         self.assert_false(result, "负数ID", "应该验证失败")
@@ -127,8 +130,10 @@ class TestRunner:
         invalid_skill = {
             "id": 1,
             "name": "测试",
+            "description": "描述",
             "skillType": 0,
-            "type": "InvalidType"  # 无效的属性类型
+            "type": "InvalidType",  # 无效的属性类型
+            "maxPP": 10
         }
 
         result = validator.validate_skill(invalid_skill)
@@ -142,9 +147,9 @@ class TestRunner:
 
         validator = SkillValidator()
         skills = [
-            {"id": 1, "name": "技能A", "skillType": 0, "type": "Normal"},
-            {"id": 2, "name": "技能B", "skillType": 0, "type": "Fire"},
-            {"id": 1, "name": "技能C", "skillType": 0, "type": "Water"},  # 重复ID
+            {"id": 1, "name": "技能A", "description": "A", "skillType": 0, "type": "Normal", "maxPP": 5},
+            {"id": 2, "name": "技能B", "description": "B", "skillType": 0, "type": "Fire", "maxPP": 10},
+            {"id": 1, "name": "技能C", "description": "C", "skillType": 0, "type": "Water", "maxPP": 10},  # 重复ID
         ]
 
         is_valid, errors, warnings = validator.validate_batch(skills)
@@ -168,8 +173,10 @@ class TestRunner:
             skill = {
                 "id": 1,
                 "name": "测试",
+                "description": "路径测试技能",
                 "skillType": 0,
                 "type": "Normal",
+                "maxPP": 5,
                 "scripterPath": path
             }
             result = validator.validate_skill(skill)
@@ -205,7 +212,7 @@ class TestRunner:
         # 创建一个小CSV文件
         small_csv = self.test_dir / "small.csv"
         with open(small_csv, 'w', encoding='utf-8') as f:
-            f.write("id,name,skillType,type\n1,测试,0,Normal\n")
+            f.write("id,name,description,skillType,type,maxPP\n1,测试,描述,0,Normal,5\n")
 
         output_dir = self.test_dir / "size_test"
         importer = SkillImporter(output_dir=output_dir)
@@ -365,16 +372,19 @@ class TestRunner:
 
         # 生成1000个技能数据
         skills = []
+        max_priority = SkillValidator.MAX_PRIORITY
         for i in range(1, 1001):
             skills.append({
                 "id": i,
                 "name": f"技能{i}",
+                "description": f"技能{i}描述",
                 "skillType": i % 3,
                 "type": ["Normal", "Fire", "Water", "Electric"][i % 4],
                 "power": (i * 10) % 200,
                 "maxPP": (i * 5) % 50 + 1,
-                "priority": i % 16,
-                "deletable": i % 2 == 0
+                "priority": i % (max_priority + 1),
+                "deletable": i % 2 == 0,
+                "guaranteedHit": i % 10 == 0
             })
 
         validator = SkillValidator()
@@ -454,7 +464,7 @@ def main():
     """主函数"""
     print("""
 ╔══════════════════════════════════════════════════════════════╗
-║        Rocoarena 技能数据管理工具 - 测试程序                  ║
+║        Rocoarena 技能数据管理工具 - 测试程序                 ║
 ╚══════════════════════════════════════════════════════════════╝
     """)
 

@@ -24,7 +24,8 @@ class SkillImporter:
             output_dir: JSON输出目录
             script_dir: Lua脚本目录
         """
-        base_dir = Path(__file__).parent.parent / "assets/skills"
+        root_dir = Path(__file__).resolve().parents[2]
+        base_dir = root_dir / "assets" / "skills"
         self.output_dir = output_dir or (base_dir / "skills_src")
         self.script_dir = script_dir or (base_dir / "scripts")
 
@@ -72,6 +73,10 @@ class SkillImporter:
             "scriptPath": "scripterPath",
             "scripterPath": "scripterPath",
             "脚本路径": "scripterPath",
+            "GuaranteedHit": "guaranteedHit",
+            "guaranteedHit": "guaranteedHit",
+            "必中": "guaranteedHit",
+            "必定命中": "guaranteedHit",
         }
 
     def normalize_column_name(self, col_name: str) -> Optional[str]:
@@ -321,7 +326,8 @@ class SkillImporter:
                 "maxPP": 0,
                 "deletable": True,
                 "priority": 8,
-                "scripterPath": ""
+                "scripterPath": "",
+                "guaranteedHit": False
             }
             return defaults.get(field_name, None)
 
@@ -333,7 +339,7 @@ class SkillImporter:
                 return 0
 
         # 布尔类型字段
-        if field_name == "deletable":
+        if field_name in ["deletable", "guaranteedHit"]:
             if isinstance(value, bool):
                 return value
             if isinstance(value, str):
@@ -445,7 +451,7 @@ class SkillImporter:
         """
         headers = [
             "id", "name", "description", "skillType", "type",
-            "power", "maxPP", "deletable", "priority", "scripterPath"
+            "power", "maxPP", "deletable", "priority", "scripterPath", "guaranteedHit"
         ]
 
         example_row = {
@@ -458,7 +464,8 @@ class SkillImporter:
             "maxPP": "35",
             "deletable": "true",
             "priority": "8",
-            "scripterPath": "skills/example.lua"
+            "scripterPath": "skills/example.lua",
+            "guaranteedHit": "false"
         }
 
         with open(output_path, 'w', encoding='utf-8-sig', newline='') as f:
