@@ -42,10 +42,8 @@
 
 以及发现今天的 star 居然多了一位！感谢所有 star 本项目的朋友，动力 +1 😽
 
-晚上看到 https://gitee.com/lanier/roco-guide/blob/master/getResources.md 这份文档，对于前端构筑有重大作用。
-
-[Links In Rocoarena Refs](./refs/getResources.md)
+晚上看到 https://gitee.com/lanier/roco-guide/blob/master/getResources.md 这份文档，对于前端构筑有重大作用。[Links In Rocoarena Refs](./refs/getResources.md)
 
 [cocos2d with swf](https://blog.csdn.net/chenee543216/article/details/9277193)
 
-
+今天时间全都消耗在车上了…暂不更新
