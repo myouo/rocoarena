@@ -7,6 +7,32 @@ RocoArena 是一个 **洛克王国模拟对战项目**，目标是构建一个
 如果后续进展顺利，将考虑提供 Web 形式供玩家体验与测试。
 
 ---
+# Build
+
+```shell
+cd arena/
+mkdir build && cd build/
+cmake ..
+make
+```
+
+构建完成之后，以测试样本运行测试程序：
+
+```shell
+# 当前目录为 rocoarena/arena/build
+cd src
+./rocoarena
+# Usage:
+#  ./rocoarena local [--pets <db>] [--skills <dir>]
+#  ./rocoarena server --port <port> [--pets <db>] [--skills <dir>]
+#  ./rocoarena client --host <host> --port <port>
+
+./rocoarena local
+```
+
+
+
+---
 
 ## 项目状态说明
 
@@ -22,6 +48,9 @@ RocoArena 是一个 **洛克王国模拟对战项目**，目标是构建一个
 ---
 
 ## 当前待解决问题（Roadmap）
+
+- [ ] **CLI界面更新问题**
+  - 倒计时更新导致输入文本显示无效，尝试转为按钮实现以解决该问题
 
 - [ ] **暴击率机制确认**
   - 基础暴击率
