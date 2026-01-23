@@ -1,4 +1,4 @@
-`cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.15)
 
 project(rocoarena LANGUAGES CXX)
 
@@ -7,9 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-
 option(ROCOARENA_ENABLE_WARNINGS "Enable extra compiler warnings" ON)
-
 if(ROCOARENA_ENABLE_WARNINGS)
   add_compile_options(-Wall -Wextra -Wpedantic -O2)
 endif()
