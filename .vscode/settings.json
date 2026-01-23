@@ -62,5 +62,8 @@
         "shared_mutex": "cpp",
         "thread": "cpp"
     },
-    "cmake.sourceDirectory": "/home/myo/rocoarena/arena/tests"
+    "cmake.sourceDirectory": "/home/myo/rocoarena/arena/tests",
+    "Lua.runtime.version": "Lua 5.3",
+    "Lua.diagnostics.enable": true,
+    "Lua.workspace.library": ["arena/assets/scripts/_api.lua"]
 }
