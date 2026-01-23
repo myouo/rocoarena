@@ -1,0 +1,18 @@
+{
+  "id": 10,
+  "name": "剑舞",
+  "description": "激烈地跳起战舞提高气势",
+  "skillType": 2,
+  "type": "Normal",
+  "power": 0,
+  "maxPP": 20,
+  "deletable": true,
+  "priority": 8,
+  "scripterPath": "assets/skills/scripts/0010_剑舞.lua",
+  "_meta": {
+    "imported_at": "2026-01-22T22:25:19.336259",
+    "batch": "test_data",
+    "source_row": 11,
+    "hash": "fb11b6dec2dc8da60aa9c6af75600983"
+  }
+}

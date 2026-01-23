@@ -1,0 +1,18 @@
+{
+  "id": 2,
+  "name": "火焰拳",
+  "description": "用燃烧着火焰的拳头攻击对手",
+  "skillType": 0,
+  "type": "Fire",
+  "power": 75,
+  "maxPP": 15,
+  "deletable": true,
+  "priority": 8,
+  "scripterPath": "assets/skills/scripts/0002_火焰拳.lua",
+  "_meta": {
+    "imported_at": "2026-01-22T22:25:19.331913",
+    "batch": "test_data",
+    "source_row": 3,
+    "hash": "db2a8ed32e9b6e5d5eb8ce2893426d20"
+  }
+}

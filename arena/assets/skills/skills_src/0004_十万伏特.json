@@ -1,0 +1,18 @@
+{
+  "id": 4,
+  "name": "十万伏特",
+  "description": "向对手发出强力的电击进行攻击",
+  "skillType": 1,
+  "type": "Electric",
+  "power": 90,
+  "maxPP": 15,
+  "deletable": true,
+  "priority": 8,
+  "scripterPath": "assets/skills/scripts/0004_十万伏特.lua",
+  "_meta": {
+    "imported_at": "2026-01-22T22:25:19.333528",
+    "batch": "test_data",
+    "source_row": 5,
+    "hash": "11a0f75292b3d4a6286d02f31c9618d9"
+  }
+}

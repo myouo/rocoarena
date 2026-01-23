@@ -1,0 +1,18 @@
+{
+  "id": 1,
+  "name": "撞击",
+  "description": "用整个身体撞向对手进行攻击",
+  "skillType": 0,
+  "type": "Normal",
+  "power": 40,
+  "maxPP": 35,
+  "deletable": true,
+  "priority": 8,
+  "scripterPath": "assets/skills/scripts/0001_撞击.lua",
+  "_meta": {
+    "imported_at": "2026-01-22T22:25:19.329745",
+    "batch": "test_data",
+    "source_row": 2,
+    "hash": "1ea3735d9b69df5fbdbb4222aa48dfca"
+  }
+}

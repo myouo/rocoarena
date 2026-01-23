@@ -1,0 +1,18 @@
+{
+  "id": 9,
+  "name": "守住",
+  "description": "完全抵挡对手的攻击",
+  "skillType": 2,
+  "type": "Normal",
+  "power": 0,
+  "maxPP": 10,
+  "deletable": false,
+  "priority": 10,
+  "scripterPath": "assets/skills/scripts/0009_守住.lua",
+  "_meta": {
+    "imported_at": "2026-01-22T22:25:19.335486",
+    "batch": "test_data",
+    "source_row": 10,
+    "hash": "9526c74dc35523775113b9b401acb1b5"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": 7,
+  "name": "龙之波动",
+  "description": "从口中发出冲击波进行攻击，并有概率恐惧对方",
+  "skillType": 1,
+  "type": "Dragon",
+  "power": 85,
+  "maxPP": 10,
+  "deletable": true,
+  "priority": 8,
+  "scripterPath": "assets/skills/scripts/0007_龙之波动.lua",
+  "_meta": {
+    "imported_at": "2026-01-22T22:25:19.334841",
+    "batch": "test_data",
+    "source_row": 8,
+    "hash": "fb10390af5c7fa7c315da4306969f5f2"
+  }
+}

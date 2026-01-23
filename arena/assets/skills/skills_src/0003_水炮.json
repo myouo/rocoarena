@@ -1,0 +1,18 @@
+{
+  "id": 3,
+  "name": "水炮",
+  "description": "向对手喷射强力的水流进行攻击",
+  "skillType": 1,
+  "type": "Water",
+  "power": 110,
+  "maxPP": 5,
+  "deletable": true,
+  "priority": 8,
+  "scripterPath": "assets/skills/scripts/0003_水炮.lua",
+  "_meta": {
+    "imported_at": "2026-01-22T22:25:19.333297",
+    "batch": "test_data",
+    "source_row": 4,
+    "hash": "e1bc8b386611e6f5c50d0b494eab5775"
+  }
+}

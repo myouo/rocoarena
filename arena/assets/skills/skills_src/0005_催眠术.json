@@ -1,0 +1,18 @@
+{
+  "id": 5,
+  "name": "催眠术",
+  "description": "施加催眠暗示使对手陷入睡眠状态",
+  "skillType": 2,
+  "type": "Cute",
+  "power": 0,
+  "maxPP": 20,
+  "deletable": true,
+  "priority": 8,
+  "scripterPath": "assets/skills/scripts/0005_催眠术.lua",
+  "_meta": {
+    "imported_at": "2026-01-22T22:25:19.334396",
+    "batch": "test_data",
+    "source_row": 6,
+    "hash": "db5b56e48331018f7a13e85fc850dc77"
+  }
+}

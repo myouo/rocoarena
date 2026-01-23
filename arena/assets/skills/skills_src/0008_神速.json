@@ -1,0 +1,18 @@
+{
+  "id": 8,
+  "name": "神速",
+  "description": "以迅雷不及掩耳之势扑向对手",
+  "skillType": 0,
+  "type": "Normal",
+  "power": 80,
+  "maxPP": 5,
+  "deletable": false,
+  "priority": 12,
+  "scripterPath": "assets/skills/scripts/0008_神速.lua",
+  "_meta": {
+    "imported_at": "2026-01-22T22:25:19.335150",
+    "batch": "test_data",
+    "source_row": 9,
+    "hash": "3a518c5f3c5c1e3c28e797a96d19c4aa"
+  }
+}
