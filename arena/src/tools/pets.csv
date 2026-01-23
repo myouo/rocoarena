@@ -1,0 +1,4 @@
+﻿id,name,attr1,attr2,bEne,bAtk,bDef,bSpA,bSpD,bSpe
+1,喵喵,Grass,,45,49,49,65,65,45
+2,喵呜,Grass,,60,62,63,80,80,60
+3,魔力猫,Grass,,80,82,83,100,100,80

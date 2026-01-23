@@ -24,6 +24,7 @@ class Species {
     int id() const noexcept { return id_; }
     const std::string& name() const noexcept { return name_; }
     const std::array<AttrType, 2>& attrs() const noexcept { return attrs_; }
+    const BS& baseStats() const noexcept { return bs_; }
     Species(int id, std::string name, std::array<AttrType, 2> attrs, BS bs)
         : id_(id), name_(name), attrs_(attrs), bs_(bs){};
 

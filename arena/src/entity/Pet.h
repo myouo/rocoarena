@@ -36,6 +36,8 @@ class Pet {
     int stagedSpecialAttack() const { return buff_.applyStageToStat(Stat::SpA, rs.rSpA); }
     int stagedSpecialDefense() const { return buff_.applyStageToStat(Stat::SpD, rs.rSpD); }
     const std::array<AttrType, 2>& attrs() const { return species->attrs(); }
+    const std::string& name() const { return species->name(); }
+    int speciesId() const { return species->id(); }
     Buff& buff() { return buff_; }
     const Buff& buff() const { return buff_; }
 
@@ -44,6 +46,15 @@ class Pet {
     int maxHP() const { return rs.rEne; }
     int currentSpeed() const { return buff_.applyStageToStat(Stat::Spe, rs.rSpe); }
     bool isFainted() const { return currentHP_ <= 0; }
+    int lastDamageTaken() const { return lastDamageTaken_; }
+    int turnDamageTaken() const { return turnDamageTaken_; }
+    void setDamageMultiplier(double multiplier);
+    void setDamageMultiplierTurns(double multiplier, int turns);
+    void setDamageImmunityTurns(int turns);
+    void setFlatDamageReduction(int amount);
+    void setPerHitDamageReduction(int amount, int turns);
+    void tickDamageReductionTurn();
+    void resetTurnDamageTaken();
 
     // 技能相关
     const std::vector<int>& learnableSkills() const { return learnableSkillIds_; }
@@ -77,6 +88,14 @@ class Pet {
     RS rs{};
     // 当前血量
     int currentHP_ = 0;
+    int lastDamageTaken_ = 0;
+    int turnDamageTaken_ = 0;
+    double damageMultiplier_ = 1.0;
+    int damageMultiplierTurns_ = 0;
+    int damageImmunityTurns_ = 0;
+    int flatDamageReduction_ = 0;
+    int perHitDamageReduction_ = 0;
+    int perHitReductionTurns_ = 0;
     //战斗状态
     Buff buff_{};
 

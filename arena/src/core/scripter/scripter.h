@@ -7,6 +7,7 @@ sudo apt install lua5.3 lublua5.3-dev
 #include <string>
 
 #include <stdexcept>
+#include <type_traits>
 
 #include "../logger/logger.h"
 
@@ -30,7 +31,12 @@ public:
             LOG_ERROR(module(), "Function '", funcName, "' not found in Lua.");
             throw std::runtime_error("Function '" + funcName + "' not found in Lua.");
         }
-        return func(args...);
+        if constexpr (std::is_void_v<Ret>) {
+            func(args...);
+            return;
+        } else {
+            return func(args...);
+        }
    
     }
 

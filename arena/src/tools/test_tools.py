@@ -290,7 +290,7 @@ class TestRunner:
         ]
 
         for skill in old_skills:
-            filename = f"{skill['id']:06d}_{skill['name']}.json"
+            filename = f"{skill['id']:04d}_{skill['name']}.json"
             with open(old_dir / filename, 'w', encoding='utf-8') as f:
                 json.dump(skill, f, ensure_ascii=False, indent=2)
 
@@ -303,7 +303,7 @@ class TestRunner:
         ]
 
         for skill in new_skills:
-            filename = f"{skill['id']:06d}_{skill['name']}.json"
+            filename = f"{skill['id']:04d}_{skill['name']}.json"
             with open(new_dir / filename, 'w', encoding='utf-8') as f:
                 json.dump(skill, f, ensure_ascii=False, indent=2)
 

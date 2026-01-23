@@ -25,14 +25,22 @@ void BattleSystem::endBattle(const std::string& reason) {
 
 void BattleSystem::onTurnStart(Player& p1, Player& p2) {
     // Hook for start-of-turn effects (weather, terrain, buffs, etc.).
-    (void)p1;
-    (void)p2;
+    if (p1.hasUsablePets() && !p1.activePet().isFainted()) {
+        p1.activePet().resetTurnDamageTaken();
+    }
+    if (p2.hasUsablePets() && !p2.activePet().isFainted()) {
+        p2.activePet().resetTurnDamageTaken();
+    }
 }
 
 void BattleSystem::onTurnEnd(Player& p1, Player& p2) {
     // Hook for end-of-turn effects (residual damage, timers, cleanup, etc.).
-    (void)p1;
-    (void)p2;
+    if (p1.hasUsablePets() && !p1.activePet().isFainted()) {
+        p1.activePet().tickDamageReductionTurn();
+    }
+    if (p2.hasUsablePets() && !p2.activePet().isFainted()) {
+        p2.activePet().tickDamageReductionTurn();
+    }
 }
 
 std::pair<Action*, Action*> BattleSystem::decideOrder(Action& action1, Action& action2, Pet& pet1, Pet& pet2) {

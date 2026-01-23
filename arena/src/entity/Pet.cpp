@@ -102,8 +102,26 @@ bool Pet::consumePP(int skillId, int amount) {
 }
 
 int Pet::takeDamage(int amount) {
-    if (amount <= 0) return currentHP_;
-    currentHP_ -= amount;
+    if (amount <= 0) {
+        lastDamageTaken_ = 0;
+        return currentHP_;
+    }
+
+    if (damageImmunityTurns_ > 0) {
+        lastDamageTaken_ = 0;
+        return currentHP_;
+    }
+
+    double scaled = static_cast<double>(amount) * damageMultiplier_;
+    int reduced = static_cast<int>(scaled);
+    reduced = std::max(0, reduced - flatDamageReduction_);
+    if (perHitReductionTurns_ > 0) {
+        reduced = std::max(0, reduced - perHitDamageReduction_);
+    }
+
+    lastDamageTaken_ = reduced;
+    turnDamageTaken_ += reduced;
+    currentHP_ -= reduced;
     if (currentHP_ < 0) currentHP_ = 0;
     return currentHP_;
 }
@@ -113,4 +131,74 @@ void Pet::restoreHP(int amount) {
     currentHP_ += amount;
     const int maxHp = maxHP();
     if (currentHP_ > maxHp) currentHP_ = maxHp;
+}
+
+void Pet::setDamageMultiplier(double multiplier) {
+    if (multiplier < 0.0) {
+        multiplier = 0.0;
+    }
+    damageMultiplier_ = multiplier;
+}
+
+void Pet::setDamageMultiplierTurns(double multiplier, int turns) {
+    if (multiplier < 0.0) {
+        multiplier = 0.0;
+    }
+    if (turns < 0) {
+        turns = 0;
+    }
+    if (turns == 0) {
+        damageMultiplier_ = 1.0;
+        damageMultiplierTurns_ = 0;
+        return;
+    }
+    damageMultiplier_ = multiplier;
+    damageMultiplierTurns_ = turns;
+}
+
+void Pet::setDamageImmunityTurns(int turns) {
+    if (turns < 0) {
+        turns = 0;
+    }
+    damageImmunityTurns_ = turns;
+}
+
+void Pet::setFlatDamageReduction(int amount) {
+    if (amount < 0) {
+        amount = 0;
+    }
+    flatDamageReduction_ = amount;
+}
+
+void Pet::setPerHitDamageReduction(int amount, int turns) {
+    if (amount < 0) {
+        amount = 0;
+    }
+    if (turns < 0) {
+        turns = 0;
+    }
+    perHitDamageReduction_ = amount;
+    perHitReductionTurns_ = turns;
+}
+
+void Pet::tickDamageReductionTurn() {
+    if (perHitReductionTurns_ > 0) {
+        --perHitReductionTurns_;
+        if (perHitReductionTurns_ == 0) {
+            perHitDamageReduction_ = 0;
+        }
+    }
+    if (damageMultiplierTurns_ > 0) {
+        --damageMultiplierTurns_;
+        if (damageMultiplierTurns_ == 0) {
+            damageMultiplier_ = 1.0;
+        }
+    }
+    if (damageImmunityTurns_ > 0) {
+        --damageImmunityTurns_;
+    }
+}
+
+void Pet::resetTurnDamageTaken() {
+    turnDamageTaken_ = 0;
 }

@@ -26,6 +26,7 @@ class SkillImporter:
         """
         root_dir = Path(__file__).resolve().parents[2]
         base_dir = root_dir / "assets" / "skills"
+        self.root_dir = root_dir
         self.output_dir = output_dir or (base_dir / "skills_src")
         self.script_dir = script_dir or (base_dir / "scripts")
 
@@ -403,18 +404,32 @@ class SkillImporter:
                 skill_name = skill.get('name', 'unknown')
                 # 清理文件名中的非法字符
                 safe_name = "".join(c for c in skill_name if c.isalnum() or c in (' ', '-', '_')).strip()
-                filename = f"{skill_id:06d}_{safe_name}.json"
+                filename = f"{skill_id:04d}_{safe_name}.json"
 
                 output_path = self.output_dir / filename
 
                 # 计算hash（如果有脚本）
                 script_content = ""
                 script_path = skill.get("scripterPath", "")
-                if script_path:
-                    full_script_path = self.script_dir / script_path
-                    if full_script_path.exists():
-                        with open(full_script_path, 'r', encoding='utf-8') as f:
-                            script_content = f.read()
+                if not script_path:
+                    script_path = f"assets/skills/scripts/{Path(filename).stem}.lua"
+                    skill["scripterPath"] = script_path
+
+                script_path_obj = Path(script_path)
+                if script_path_obj.is_absolute():
+                    full_script_path = script_path_obj
+                elif script_path_obj.parts and script_path_obj.parts[0] == "assets":
+                    full_script_path = self.root_dir / script_path_obj
+                else:
+                    full_script_path = self.script_dir / script_path_obj
+                if not full_script_path.exists():
+                    full_script_path.parent.mkdir(parents=True, exist_ok=True)
+                    with open(full_script_path, 'w', encoding='utf-8') as f:
+                        f.write(self._script_template())
+
+                if full_script_path.exists():
+                    with open(full_script_path, 'r', encoding='utf-8') as f:
+                        script_content = f.read()
 
                 skill['_meta']['hash'] = hash_skillData(skill, script_content)
 
@@ -464,7 +479,7 @@ class SkillImporter:
             "maxPP": "35",
             "deletable": "true",
             "priority": "8",
-            "scripterPath": "skills/example.lua",
+            "scripterPath": "assets/skills/scripts/example.lua",
             "guaranteedHit": "false"
         }
 
@@ -474,6 +489,16 @@ class SkillImporter:
             writer.writerow(example_row)
 
         return str(output_path)
+
+    def _script_template(self) -> str:
+        return (
+            "-- Skill script template\n"
+            "-- Available API: see _api.lua in this scripts directory.\n"
+            "\n"
+            "function on_cast()\n"
+            "  -- Example: deal_damage(skill_power)\n"
+            "end\n"
+        )
 
 
 def main():

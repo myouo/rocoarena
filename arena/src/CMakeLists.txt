@@ -25,6 +25,7 @@ target_include_directories(rocoarena_core
     ${PROJECT_SOURCE_DIR}/src/battle
     ${PROJECT_SOURCE_DIR}/src/skill
     ${PROJECT_SOURCE_DIR}/external
+    ${PROJECT_SOURCE_DIR}/external/nlohmann
 )
 
 target_link_libraries(rocoarena_core
@@ -33,5 +34,15 @@ target_link_libraries(rocoarena_core
     Lua::Lua
 )
 
-add_executable(rocoarena main.cpp)
+add_executable(rocoarena
+  main.cpp
+  startup/data_loader.cpp
+  startup/battle_session.cpp
+  startup/cli_helpers.cpp
+  startup/http_server.cpp
+  startup/http_client.cpp
+  startup/local_battle.cpp
+  startup/server.cpp
+  startup/client.cpp
+)
 target_link_libraries(rocoarena PRIVATE rocoarena_core)
