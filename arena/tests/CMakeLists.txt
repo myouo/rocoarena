@@ -10,6 +10,7 @@ set(COMMON_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/../src
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/core
     ${CMAKE_CURRENT_SOURCE_DIR}/../external
+    ${CMAKE_CURRENT_SOURCE_DIR}/../external/nlohmann
     /usr/include/lua5.3
 )
 set(COMMON_LIBS
@@ -45,8 +46,9 @@ add_executable(testEntity
     entity/testEntity.cpp
     ../src/entity/Pet.cpp
     ../src/battle/Buff.cpp
+    ../src/skill/SkillRegistry.cpp
 )
 
 target_include_directories(testLua PRIVATE ${COMMON_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
-target_include_directories(testEntity PRIVATE ${ENTITY_INCLUDES})
+target_include_directories(testEntity PRIVATE ${ENTITY_INCLUDES} ${COMMON_INCLUDES})
 target_link_libraries(testLua PRIVATE ${COMMON_LIBS})
