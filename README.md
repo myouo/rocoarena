@@ -10,6 +10,7 @@ RocoArena 是一个 **洛克王国模拟对战项目**，目标是构建一个
 # Build
 
 ```shell
+sudo apt install libsqlite3-dev liblua5.3-dev
 cd arena/
 mkdir build && cd build/
 cmake ..

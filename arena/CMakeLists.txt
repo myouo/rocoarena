@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(rocoarena LANGUAGES CXX)
+project(rocoarena LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,45 +8,99 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(ROCOARENA_ENABLE_WARNINGS "Enable extra compiler warnings" ON)
+
 if(ROCOARENA_ENABLE_WARNINGS)
   add_compile_options(-Wall -Wextra -Wpedantic -O2)
 endif()
 
-# Fetch SQLite3 and Lua 5.3
-include(FetchContent)
+find_package(SQLite3 QUIET)
+find_package(Lua 5.3 QUIET)
 
-# --- SQLite3 ---
-# 声明 SQLite3 的源，它自带 CMakeLists.txt
-FetchContent_Declare(
-  sqlite3_dep
-  GIT_REPOSITORY https://github.com/sqlite/sqlite.git
-  GIT_TAG        version-3.45.1
-)
-# 下载并使其目标 'sqlite3' 可用
-FetchContent_MakeAvailable(sqlite3_dep)
+set(ROCOARENA_FETCH_LUA OFF)
+set(ROCOARENA_FETCH_SQLITE3 OFF)
 
-# --- Lua 5.3 ---
-FetchContent_Declare(
-  lua_dep
-  GIT_REPOSITORY https://github.com/lua/lua.git
-  GIT_TAG        v5.3.6
-)
-
-FetchContent_Populate(lua_dep)
-
-file(GLOB LUA_SOURCES "${lua_dep_SOURCE_DIR}/src/*.c")
-list(FILTER LUA_SOURCES EXCLUDE REGEX ".*/lua(c)?\\.c$") # 排除解释器入口
-add_library(lua_lib STATIC ${LUA_SOURCES})
-target_include_directories(lua_lib PUBLIC "${lua_dep_SOURCE_DIR}/src")
-
-# 在Linux/macOS上，Lua 可能需要链接数学库
-if(UNIX AND NOT APPLE)
-    target_link_libraries(lua_lib PUBLIC m)
+if(NOT TARGET Lua::Lua)
+  if(LUA_FOUND OR Lua_FOUND)
+    add_library(Lua::Lua INTERFACE IMPORTED)
+    set_target_properties(Lua::Lua PROPERTIES
+      INTERFACE_INCLUDE_DIRECTORIES "${LUA_INCLUDE_DIR}"
+      INTERFACE_LINK_LIBRARIES "${LUA_LIBRARIES}"
+    )
+  else()
+    set(ROCOARENA_FETCH_LUA ON)
+  endif()
 endif()
 
-add_library(SQLite::SQLite3 ALIAS sqlite3)
+if(NOT TARGET SQLite::SQLite3)
+  if(SQLite3_FOUND)
+    add_library(SQLite::SQLite3 INTERFACE IMPORTED)
+    set_target_properties(SQLite::SQLite3 PROPERTIES
+      INTERFACE_INCLUDE_DIRECTORIES "${SQLite3_INCLUDE_DIRS}"
+      INTERFACE_LINK_LIBRARIES "${SQLite3_LIBRARIES}"
+    )
+  else()
+    set(ROCOARENA_FETCH_SQLITE3 ON)
+  endif()
+endif()
 
-add_library(Lua::Lua ALIAS lua_lib)
+if(ROCOARENA_FETCH_LUA OR ROCOARENA_FETCH_SQLITE3)
+  include(FetchContent)
+endif()
+
+if(ROCOARENA_FETCH_LUA)
+  FetchContent_Declare(
+    lua
+    URL https://www.lua.org/ftp/lua-5.3.6.tar.gz
+  )
+  FetchContent_MakeAvailable(lua)
+  add_library(lua STATIC
+    ${lua_SOURCE_DIR}/src/lapi.c
+    ${lua_SOURCE_DIR}/src/lauxlib.c
+    ${lua_SOURCE_DIR}/src/lbaselib.c
+    ${lua_SOURCE_DIR}/src/lcode.c
+    ${lua_SOURCE_DIR}/src/lcorolib.c
+    ${lua_SOURCE_DIR}/src/lctype.c
+    ${lua_SOURCE_DIR}/src/ldblib.c
+    ${lua_SOURCE_DIR}/src/ldebug.c
+    ${lua_SOURCE_DIR}/src/ldo.c
+    ${lua_SOURCE_DIR}/src/ldump.c
+    ${lua_SOURCE_DIR}/src/lfunc.c
+    ${lua_SOURCE_DIR}/src/lgc.c
+    ${lua_SOURCE_DIR}/src/linit.c
+    ${lua_SOURCE_DIR}/src/liolib.c
+    ${lua_SOURCE_DIR}/src/llex.c
+    ${lua_SOURCE_DIR}/src/lmathlib.c
+    ${lua_SOURCE_DIR}/src/lmem.c
+    ${lua_SOURCE_DIR}/src/loadlib.c
+    ${lua_SOURCE_DIR}/src/lobject.c
+    ${lua_SOURCE_DIR}/src/lopcodes.c
+    ${lua_SOURCE_DIR}/src/loslib.c
+    ${lua_SOURCE_DIR}/src/lparser.c
+    ${lua_SOURCE_DIR}/src/lstate.c
+    ${lua_SOURCE_DIR}/src/lstring.c
+    ${lua_SOURCE_DIR}/src/lstrlib.c
+    ${lua_SOURCE_DIR}/src/ltable.c
+    ${lua_SOURCE_DIR}/src/ltablib.c
+    ${lua_SOURCE_DIR}/src/ltm.c
+    ${lua_SOURCE_DIR}/src/lundump.c
+    ${lua_SOURCE_DIR}/src/lutf8lib.c
+    ${lua_SOURCE_DIR}/src/lvm.c
+    ${lua_SOURCE_DIR}/src/lzio.c
+  )
+  add_library(Lua::Lua ALIAS lua)
+  target_include_directories(lua PUBLIC ${lua_SOURCE_DIR}/src)
+endif()
+
+if(ROCOARENA_FETCH_SQLITE3)
+  FetchContent_Declare(
+    sqlite3
+    URL https://www.sqlite.org/2023/sqlite-amalgamation-3430200.zip
+  )
+  FetchContent_MakeAvailable(sqlite3)
+  add_library(sqlite3 STATIC ${sqlite3_SOURCE_DIR}/sqlite3.c)
+  add_library(SQLite::SQLite3 ALIAS sqlite3)
+  target_include_directories(sqlite3 PUBLIC ${sqlite3_SOURCE_DIR})
+endif()
 
 add_subdirectory(src)
 
