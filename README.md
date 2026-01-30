@@ -19,6 +19,9 @@ make
 
 构建完成之后，以测试样本运行测试程序：
 
+# 测试
+
+## 本地 AI 对局测试
 ```shell
 # 当前目录为 rocoarena/arena/build
 cd src
@@ -31,6 +34,49 @@ cd src
 ./rocoarena local
 ```
 
+## host-client 测试
+
+> for host
+
+```shell
+./rocoarena server --port 2134
+# Server started on port 2134
+# Press Ctrl+C to stop.
+```
+
+> for client
+
+```shell
+./rocoarena client --port 2134
+# Enter your name: myo
+# Lobby (Up/Down + Enter, q to cancel)
+#   list
+# > create
+#   join
+#   random
+#   spectate
+#   quit
+
+# Room name: myo's room
+```
+> in room
+```shell
+# Room: myo's room
+#   Player 1: myo [not ready]
+#   Player 2: (empty)
+#   Spectators: 0 []
+# 进入了房间（玩家1）
+
+# Actions:
+# > ready
+#   unready
+#   leave
+#   refresh
+
+```
+
+> [!CAUTION]
+> 本项目到目前为止仍未在 Windows 系统进行过测试，若您发现任何因环境不同导致的错误，请为本项目提一个 issue，作者将火速解决。
 
 
 ---
