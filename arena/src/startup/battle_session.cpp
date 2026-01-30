@@ -66,16 +66,16 @@ void BattleSession::scheduleForceSwitch(int index) {
     forcePending_[index] = true;
     forceDeadline_[index] = Clock::now() + kForceSwitchTimeout;
     actions_[index].reset();
-    actionDeadline_[index].reset();
+    clearTurnDeadline();
 }
 
-void BattleSession::scheduleActionDeadline(int index) {
-    if (actionDeadline_[index].has_value()) return;
-    actionDeadline_[index] = Clock::now() + kChooseActionTimeout;
+void BattleSession::scheduleTurnDeadline() {
+    if (turnDeadline_.has_value()) return;
+    turnDeadline_ = Clock::now() + kChooseActionTimeout;
 }
 
-void BattleSession::clearActionDeadline(int index) {
-    actionDeadline_[index].reset();
+void BattleSession::clearTurnDeadline() {
+    turnDeadline_.reset();
 }
 
 bool BattleSession::validateAction(int index, const ActionData& action, std::string* error) const {
@@ -150,13 +150,11 @@ bool BattleSession::submitAction(int index, const ActionData& action, std::strin
         }
         forcePending_[index] = false;
         actions_[index].reset();
-        clearActionDeadline(index);
         return true;
     }
 
     if (!validateAction(index, action, error)) return false;
     actions_[index] = action;
-    clearActionDeadline(index);
     return true;
 }
 
@@ -216,7 +214,6 @@ void BattleSession::applyRandomSkill(int index) {
     if (actions_[index].has_value()) return;
     ActionData action = buildRandomSkillAction(index);
     actions_[index] = action;
-    clearActionDeadline(index);
     if (action.type == ActionType::Skill) {
         LOG_INFO("BattleSession", "Action timeout: auto skill for player ", index + 1, " skillId=", action.skillId);
     } else {
@@ -237,11 +234,11 @@ void BattleSession::resolveTurn() {
     auto act2 = buildAction(a2);
 
     battle_.takeTurn(*act1, *act2);
+    lastResolved_ = ResolvedActions{ battle_.currentTurn(), a1, a2 };
 
     actions_[0].reset();
     actions_[1].reset();
-    clearActionDeadline(0);
-    clearActionDeadline(1);
+    clearTurnDeadline();
 
     updateOutcome();
 
@@ -271,6 +268,19 @@ void BattleSession::updateOutcome() {
     }
 }
 
+void BattleSession::forfeit(int index) {
+    if (outcome_.ended) return;
+    outcome_.ended = true;
+    outcome_.reason = "player left";
+    if (index == 0) {
+        outcome_.winner = 2;
+    } else if (index == 1) {
+        outcome_.winner = 1;
+    } else {
+        outcome_.winner = 0;
+    }
+}
+
 void BattleSession::tick() {
     if (outcome_.ended) return;
 
@@ -292,25 +302,48 @@ void BattleSession::tick() {
             }
             continue;
         }
-
-        if (actions_[i].has_value()) {
-            clearActionDeadline(i);
-            continue;
-        }
-
-        scheduleActionDeadline(i);
-        if (actionDeadline_[i].has_value() && Clock::now() >= *actionDeadline_[i]) {
-            applyRandomSkill(i);
-        }
     }
 
     if (!forcePending_[0] && !forcePending_[1]) {
+        if (!actions_[0].has_value() || !actions_[1].has_value()) {
+            scheduleTurnDeadline();
+        }
+        if (turnDeadline_.has_value() && Clock::now() >= *turnDeadline_) {
+            if (!actions_[0].has_value()) {
+                applyRandomSkill(0);
+            }
+            if (!actions_[1].has_value()) {
+                applyRandomSkill(1);
+            }
+        }
         if (actions_[0].has_value() && actions_[1].has_value()) {
             resolveTurn();
         }
     }
 
     updateOutcome();
+}
+
+nlohmann::json BattleSession::actionToJson(const ActionData& action) const {
+    nlohmann::json j;
+    switch (action.type) {
+        case ActionType::Skill:
+            j["type"] = "skill";
+            j["skillId"] = action.skillId;
+            break;
+        case ActionType::Switch:
+            j["type"] = "switch";
+            j["index"] = action.switchIndex;
+            break;
+        case ActionType::Flee:
+            j["type"] = "flee";
+            break;
+        case ActionType::Stay:
+        default:
+            j["type"] = "stay";
+            break;
+    }
+    return j;
 }
 
 nlohmann::json BattleSession::stateForPlayer(int index) const {
@@ -387,5 +420,20 @@ nlohmann::json BattleSession::stateForPlayer(int index) const {
     state["self"] = std::move(selfJson);
     state["opponent"] = std::move(oppJson);
 
+    return state;
+}
+
+nlohmann::json BattleSession::spectatorState() const {
+    nlohmann::json state = stateForPlayer(0);
+    if (lastResolved_.has_value()) {
+        nlohmann::json actions;
+        actions["turn"] = lastResolved_->turn;
+        actions["p1"] = actionToJson(lastResolved_->p1);
+        actions["p2"] = actionToJson(lastResolved_->p2);
+        state["lastActions"] = std::move(actions);
+    } else {
+        state["lastActions"] = nlohmann::json::object();
+    }
+    state["spectator"] = true;
     return state;
 }

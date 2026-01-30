@@ -35,6 +35,12 @@ struct BattleOutcome {
     std::string reason;
 };
 
+struct ResolvedActions {
+    int turn = 0;
+    ActionData p1;
+    ActionData p2;
+};
+
 class BattleSession {
   public:
     BattleSession(std::vector<std::unique_ptr<Pet>> roster1, std::vector<std::unique_ptr<Pet>> roster2,
@@ -43,11 +49,13 @@ class BattleSession {
     PendingType pendingForPlayer(int index) const;
     bool submitAction(int index, const ActionData& action, std::string* error = nullptr);
     void tick();
+    void forfeit(int index);
 
     BattleOutcome outcome() const { return outcome_; }
     int currentTurn() const { return battle_.currentTurn(); }
 
     nlohmann::json stateForPlayer(int index) const;
+    nlohmann::json spectatorState() const;
 
     Player& player1() { return player1_; }
     Player& player2() { return player2_; }
@@ -59,8 +67,8 @@ class BattleSession {
 
     bool needsForceSwitch(int index) const;
     void scheduleForceSwitch(int index);
-    void scheduleActionDeadline(int index);
-    void clearActionDeadline(int index);
+    void scheduleTurnDeadline();
+    void clearTurnDeadline();
     void applyRandomSwitch(int index);
     ActionData buildRandomSkillAction(int index) const;
     void applyRandomSkill(int index);
@@ -69,6 +77,7 @@ class BattleSession {
     std::unique_ptr<Action> buildAction(const ActionData& action) const;
 
     void updateOutcome();
+    nlohmann::json actionToJson(const ActionData& action) const;
 
     std::vector<std::unique_ptr<Pet>> roster1_;
     std::vector<std::unique_ptr<Pet>> roster2_;
@@ -80,9 +89,10 @@ class BattleSession {
     std::array<std::optional<ActionData>, 2> actions_{};
     std::array<bool, 2> forcePending_{};
     std::array<Clock::time_point, 2> forceDeadline_{};
-    std::array<std::optional<Clock::time_point>, 2> actionDeadline_{};
+    std::optional<Clock::time_point> turnDeadline_{};
 
     std::optional<int> lastFlee_;
+    std::optional<ResolvedActions> lastResolved_;
     BattleOutcome outcome_{};
 
     mutable std::mt19937 rng_{ std::random_device{}() };
