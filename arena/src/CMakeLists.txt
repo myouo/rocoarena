@@ -34,8 +34,7 @@ target_link_libraries(rocoarena_core
     Lua::Lua
 )
 
-add_executable(rocoarena
-  main.cpp
+set(ROCOARENA_APP_SOURCES
   startup/data_loader.cpp
   startup/battle_session.cpp
   startup/cli_helpers.cpp
@@ -45,4 +44,10 @@ add_executable(rocoarena
   startup/server.cpp
   startup/client.cpp
 )
-target_link_libraries(rocoarena PRIVATE rocoarena_core)
+
+add_library(rocoarena_app STATIC ${ROCOARENA_APP_SOURCES})
+target_link_libraries(rocoarena_app PUBLIC rocoarena_core)
+target_include_directories(rocoarena_app PUBLIC ${PROJECT_SOURCE_DIR}/src/startup)
+
+add_executable(rocoarena main.cpp)
+target_link_libraries(rocoarena PRIVATE rocoarena_app)

@@ -102,6 +102,7 @@ if(ROCOARENA_FETCH_SQLITE3)
   target_include_directories(sqlite3 PUBLIC ${sqlite3_SOURCE_DIR})
 endif()
 
+enable_testing()
 add_subdirectory(src)
 
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests/CMakeLists.txt")
